@@ -16,7 +16,12 @@ const  Home  : NextPage = () =>  {
             setLoading(false)
         },300);
     },[])
-const {data: session} = useSession();
+    const {data: session} = useSession();
+    React.useEffect(() => {
+        console.log(session)
+      
+    },[])
+
   // if(session){
   //   console.log(session)
   //   return(

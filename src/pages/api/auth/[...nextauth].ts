@@ -1,19 +1,25 @@
 import NextAuth,{NextAuthOptions} from "next-auth"
 import CredentialsProviders from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"; 
+import GoogleProvider from "next-auth/providers/google"
+import FacebookProvider from "next-auth/providers/facebook"; 
 const authOptions :NextAuthOptions  = {
-  // session:{
-  //   strategy:"jwt"
-  // },
+  session:{
+    strategy:"jwt"
+  },
   providers: [
-    // GithubProvider({
-    //   clientId: process.env.GITHUB_ID,
-    //   clientSecret: process.env.GITHUB_SECRET,
-    // }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+      
+    }),
     GoogleProvider({
       clientId:process.env.GOOGLE_ID,
       clientSecret:process.env.GOOGLE_SECRET
+    }),
+    FacebookProvider({
+      clientId:process.env.FACEBOOK_ID,
+      clientSecret: process.env.FACEBOOK_SECRET
     }),
     CredentialsProviders({
       type: 'credentials',
@@ -29,8 +35,7 @@ const authOptions :NextAuthOptions  = {
         // validate here your username and password
         if(email == 'user@gmail.com' && password == "user") {
           // throw new Error('invalid credentials');
-          const user :any = {id: 1, name: 'User', email: 'user@gmail.com'}
-          return  user
+          return {id: 1, name: 'User', email: 'user@gmail.com'}
         }
         // confirmed users
         return {error: "invalid credentials"}
@@ -38,7 +43,6 @@ const authOptions :NextAuthOptions  = {
       },
     }),
   ],
-  // : process.env.NEXTAUTH_URL,
   secret: process.env.SECRET,
   pages: {
     signIn: "/auth/login",  

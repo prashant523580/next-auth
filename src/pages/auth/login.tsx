@@ -2,7 +2,7 @@ import BaseCard from '@/components/BaseCard/Basecard';
 import { Button, Grid, Stack, TextField } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import type { NextPage } from 'next';
-import { signIn } from 'next-auth/react';
+import { signIn,useSession } from 'next-auth/react';
 import React from 'react'
 import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -10,14 +10,21 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import Layout from '@/components/Layout/Layout';
 import Link from 'next/link';
 import Loader from '@/components/Loader';
+import { useRouter } from 'next/router';
 const Login: NextPage = () => {
     const [user, setUser] = React.useState({
         email: "",
         password: ""
     })
+    const {data :session} = useSession();
     const [loading, setLoading] = React.useState(true);
+    const router = useRouter();
     React.useEffect(() => {
         // setLoading(true);
+        if(session){
+            router.push('/')
+        }
+        
         setInterval(() => {
             setLoading(false)
         }, 500);
@@ -41,11 +48,16 @@ const Login: NextPage = () => {
     }
     async function handleGoogleLogin(){
         signIn("google",{callbackUrl:"http://localhost:3000"})
+    }   
+    const  handleGithubLogin = async() => {
+        signIn('github', {callbackUrl:'http://localhost:3000'})
+    }
+    const  handleFacebookLogin = async() => {
+        signIn('facebook', {callbackUrl:'http://localhost:3000'})
     }
     return (
 
-        loading ?
-            <Loader /> :
+      
             <Layout sx={{
                 padding: "6px 0"
             }}>
@@ -106,8 +118,8 @@ const Login: NextPage = () => {
                                     }}>
 
                                         <Button onClick={handleGoogleLogin} size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GoogleIcon /><span className='mx-2'>Login with Google</span></div></Button>
-                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GitHubIcon /><span className='mx-2'>Login with Github</span></div></Button>
-                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><FacebookIcon /><span className='mx-2'>Login with Facebook</span></div> </Button>
+                                        <Button onClick={handleGithubLogin} size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GitHubIcon /><span className='mx-2'>Login with Github</span></div></Button>
+                                        <Button onClick={handleFacebookLogin} size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><FacebookIcon /><span className='mx-2'>Login with Facebook</span></div> </Button>
                                     </Stack>
                                     <div className="text-center">
                                         <a
