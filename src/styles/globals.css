@@ -1,14 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
-
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-
+  --lightblue: #53708c;
+  --darkblue: rgba(10, 10, 80, 0.877);
+  --lightgreen: rgb(33, 175, 92);
   --primary-glow: conic-gradient(
     from 180deg at 50% 50%,
     #16abff33 0deg,
@@ -81,8 +85,9 @@
 
 html,
 body {
-  max-width: 100vw;
+  /* max-width: 100vw; */
   overflow-x: hidden;
+
 }
 
 body {
@@ -100,6 +105,40 @@ a {
   text-decoration: none;
 }
 
+/* form{
+  width: 380px;
+  margin: 0 auto;
+} */
+/* input{
+  padding: .6em .3em;
+  margin: .3em 0;
+  outline: 0;
+  border: 0;
+  background-color: whitesmoke;
+  border-radius: .4em;
+} */
+.loader{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index:9 ;
+  width: 50px;
+  height: 50px;
+  border-left: 5px solid var(--lightblue);
+  border-right: 5px solid var(--lightblue);
+  border-top: 5px solid var(--darkblue);
+  border-bottom: 5px solid var(--darkblue);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+  animation: loading 2s ease infinite;
+}
+@keyframes loading {
+    from{
+      transform: rotate(0deg);
+    }to{
+      transform: rotate(360deg);
+    }
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
