@@ -19,5 +19,9 @@ namespace NodeJS {
     TWITTER_SECRET: string
     DATABASE_URL: string
     SECRET: string
+    JWT_SECRET:string
+    AES_SECRET_KEY:string
+    MONGODB_URI:string
+    MONGODB_NAME:string
   }
 }

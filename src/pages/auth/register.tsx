@@ -12,6 +12,8 @@ import Link from 'next/link';
 import Loader from '@/components/Loader';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import axios from 'axios';
+import Toastify from '@/components/Toastify';
 const Register: NextPage = () => {
     const [user, setUser] = React.useState<any>({
         firstname: "",
@@ -29,7 +31,11 @@ const Register: NextPage = () => {
     const [phoneError, setPhoneError] = React.useState(false);
     const [cPasswordError,setCPasswordError] = React.useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = React.useState(false);
-
+    const [error,setError] = React.useState(false);
+    const [success,setSuccess] = React.useState(null);
+    const [responseMessage,setResponseMessage] = React.useState('');
+    
+  const [open ,setOpen] = React.useState(false);
     React.useEffect(() => {
         // setLoading(true);
         setInterval(() => {
@@ -75,19 +81,62 @@ const Register: NextPage = () => {
         // setEmailError(false)
         //  setPasswordError(false)
         //  setCPasswordError(false)
-        console.log(user)
+        // console.log(user)
+        let config = {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        }
+        let res = await fetch("/api/register",{
+            headers:{
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify(user),
+            method:"POST"
+        });
+        let data = await res.json();
+            if(data){
+
+                setResponseMessage(data.message)
+                setSuccess(data.success)
+                setOpen(true)
+                setUser({
+                    email:"",
+                    firstname:"",
+                    lastname:"",
+                    phone:"",
+                    password:"",
+                    cpassword:""
+                })
+            }
+
+            // console.log(data)
+        // if(data){
+        // }else{
+        //     setResponseMessage('Something wents wrongs..')
+        //     // setError(false)
+        //     setOpen(true)
+        //     setSuccess(false)
+
+        // }
         // const res = await signIn("credentials", {
         //     email: user.email,
         //     password: user.password,
         //     redirect: false
         // })
         // console.log(res)
+        // setInterval(() => {
+        //     setOpen(false)
+        // },2500)
     }
     return (
         loading ? <Loader /> :
             <Layout sx={{
                 padding: "6px 0"
             }}>
+                <Toastify onClick={() => setOpen(false)} open={open} succes={success} title="Register" message={responseMessage}/>
+                
+                {/* {error && <Toastify title="Register" message={responseMessage}/>} */}
                 {/* <h1>Login form</h1> */}
             {/* <Grid container spacing={0}>
                 <Grid item xs={12} lg={12}>
@@ -150,16 +199,12 @@ const Register: NextPage = () => {
                     </BaseCard>
                 </Grid>
             </Grid> */}
-                <div className="container mx-auto ">
-                    <div className="flex justify-center px-6 my-12">
+            <div className="container mx-auto ">
+                    <div className="flex justify-center  px-6 my-2">
 
-                        <div className="w-full xl:w-3/4 lg:w-11/12 bg-white flex rounded-lg shadow-xl">
-
-                            <div
-                                className="w-full h-auto hidden lg:block lg:w-5/12 bg-contain bg-no-repeat bg-center rounded-l-lg"
-                                style={{ backgroundImage: "url('/images/form.jpg')" }}></div>
-                            <div className="w-full lg:w-7/12 bg-white p-5 rounded-lg lg:rounded-l-none">
-                                <h3 className="pt-4 text-2xl text-center">Create an Account!</h3>
+                        <div className="w-full xl:w-3/4 bg-white rounded-xl lg:w-11/12 flex flex-wrap shadow-xl">
+                        <div className="w-full lg:w-7/12 bg-white  rounded-lg lg:rounded-l-none">
+                        <h3 className="pt-4 text-2xl text-center">Create an Account!</h3>
                                 <form onSubmit={registerUser} className="px-6 pt-6 pb-8 mb-4 bg-white rounded">
                                     <div className="mb-4 md:flex md:justify-between">
                                         <div className="mb-4 md:mr-2 md:mb-0">
@@ -254,16 +299,7 @@ const Register: NextPage = () => {
                                         </button>
                                     </div>
                                     {/* <hr className="mb-6 border-t" /> */}
-                                    <div className="">
-                                        <Divider sx={{ my: 1 }} component={"div"}  >Or </Divider></div>
-                                    <Stack sx={{
-                                        margin: ".3em 0"
-                                    }}>
-
-                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GoogleIcon /><span className='mx-2'>Login with Google</span></div></Button>
-                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GitHubIcon /><span className='mx-2'>Login with Github</span></div></Button>
-                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><FacebookIcon /><span className='mx-2'>Login with Facebook</span></div> </Button>
-                                    </Stack>
+                                    
                                     <div className="text-center">
                                         <a
                                             className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
@@ -282,9 +318,30 @@ const Register: NextPage = () => {
                                     </div>
                                 </form>
                             </div>
+                            <div className="w-full h-auto lg:block lg:w-5/12 bg-contain  bg-no-repeat bg-center rounded-l-lg"
+                                // style={{ backgroundImage: "url('/images/form.jpg')" }}
+                                >
+                                        <h3 className="pt-4  max-lx:pt-0 text-2xl text-center">Social Login!</h3>
+                                        <div className='className="px-6 pt-6 pb-8 mb-4 max-xl:pt-2 bg-white rounded"'>
+
+                                        <Stack sx={{
+                                            my:2,
+                                            textALign:"left",
+                                            px:3
+                                    }} spacing={.3}>
+                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex justify-start items-center w-full"><GoogleIcon /><span className='mx-2'>Login with Google</span></div></Button>
+                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex justify-start items-center w-full"><GitHubIcon /><span className='mx-2'>Login with Github</span></div></Button>
+                                        <Button size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center w-full"><FacebookIcon /><span className='mx-2'>Login with Facebook</span></div> </Button>
+                                    </Stack>
+                                            </div>
+                            </div>
+
+                           
                         </div>
+
                     </div>
                 </div>
+                
             </Layout>
     )
 }

@@ -3,6 +3,12 @@ import CredentialsProviders from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import FacebookProvider from "next-auth/providers/facebook"; 
+import {MongoDBAdapter} from "@next-auth/mongodb-adapter";
+import { clientPromise } from "../../../db/dbcon";
+import User from "@/model/user.model";
+import CryptoJs from "crypto-js";
+// let {clientPromise} = await connectToDatabase()
+
 const authOptions :NextAuthOptions  = {
   session:{
     strategy:"jwt"
@@ -32,10 +38,25 @@ const authOptions :NextAuthOptions  = {
           email: string,
           password: string,
         };
+        // console.log(email, password)
         // validate here your username and password
-        if(email == 'user@gmail.com' && password == "user") {
+        let user : any = await User.findOne({email});
+        // console.log(user)
+        // if(user.password == password){
+        //   return user
+        // }
+        // throw new Error("invalid credential!")
+          let dcryptPassword = CryptoJs.AES.decrypt(user.password, process.env.AES_SECRET_KEY).toString(CryptoJs.enc.Utf8)
+        if (password == dcryptPassword) {
           // throw new Error('invalid credentials');
-          return {id: 1, name: 'User', email: 'user@gmail.com'}
+          // console.log(logged_user)
+          return {
+            id: 1,
+            name: user.firstname + " " + user.lastname,
+            email: user.email,
+            image: user.image
+          }    
+          
         }
         // confirmed users
         return {error: "invalid credentials"}
@@ -43,6 +64,9 @@ const authOptions :NextAuthOptions  = {
       },
     }),
   ],
+  adapter: MongoDBAdapter(clientPromise,{
+    databaseName : "nextauth"
+  }),
   secret: process.env.SECRET,
   pages: {
     signIn: "/auth/login",  

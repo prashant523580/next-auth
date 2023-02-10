@@ -3,6 +3,8 @@ import type { AppProps } from 'next/app'
 import {SessionProvider} from "next-auth/react";
 import React from 'react';
 import Loader from '@/components/Loader';
+import { Provider } from 'react-redux';
+import store from '@/redux/store/store';
 export default function App({ Component, pageProps }: AppProps) {
   const [loading,setLoading] = React.useState(true);
     React.useEffect(() => {
@@ -15,10 +17,13 @@ export default function App({ Component, pageProps }: AppProps) {
      <SessionProvider
        session={pageProps.session}
     >
+      <Provider store={store}>
+
       <Component {...pageProps} />
       {
-      // loading ? <Loader/> : 
+        // loading ? <Loader/> : 
       }
+      </Provider>
      </SessionProvider>
  
     )

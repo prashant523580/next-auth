@@ -7,6 +7,7 @@ import type { NextPage } from 'next'
 import Layout from '@/components/Layout/Layout'
 import Loader from '@/components/Loader'
 import React from "react";
+import DashboardProtected from './Dashboard'
 const  Home  : NextPage = () =>  {
   // const [session,setSession] = React.useState(false);
   const [loading,setLoading] = React.useState(true);
@@ -53,10 +54,16 @@ const  Home  : NextPage = () =>  {
         <div className={styles.grid}>
          <div>
           {
-            session ?   <div>
+            session ?  
+            <>
+            {/* <DashboardProtected/>  */}
+            <div>
             <p>Name: {session?.user?.name}</p>
               <p> Signed as {session?.user?.email} </p>
-            <button className='bg-gray-800 text-white rounded-sm px-3 py-2' onClick={() => signOut()}> signout </button></div>
+              {/* <p>  {session?.user?.image} </p> */}
+            {/* <button className='bg-gray-800 text-white rounded-sm px-3 py-2' onClick={() => signOut()}> signout </button> */}
+            </div>
+            </> 
             :
           <button onClick={() => signIn()}>Login</button>
           }

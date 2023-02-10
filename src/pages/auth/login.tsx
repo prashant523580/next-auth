@@ -11,7 +11,12 @@ import Layout from '@/components/Layout/Layout';
 import Link from 'next/link';
 import Loader from '@/components/Loader';
 import { useRouter } from 'next/router';
-const Login: NextPage = () => {
+import {useDispatch,useSelector} from "react-redux";
+import { credentialLogin } from '@/redux/slices/user.slices';
+import { RootState } from '@/redux/store/store';
+const Login : NextPage = () => {
+    const dispatch= useDispatch();
+    const state = useSelector((state:RootState) => state.user);
     const [user, setUser] = React.useState({
         email: "",
         password: ""
@@ -20,7 +25,7 @@ const Login: NextPage = () => {
     const [loading, setLoading] = React.useState(true);
     const router = useRouter();
     React.useEffect(() => {
-        // setLoading(true);
+    
         if(session){
             router.push('/')
         }
@@ -29,26 +34,49 @@ const Login: NextPage = () => {
             setLoading(false)
         }, 500);
     }, [])
+    React.useEffect(() => {
+        // setLoading(true);
+        console.log(state)
+       
+    }, [state])
     const inputEvent = (e: any) => {
         let { name, value } = e.target;
-        console.log(name, value)
+        // console.log(name, value)
         setUser((pre: any) => {
             return { ...pre, [name]: value }
         })
     }
     const loginUser = async (e: any) => {
         e.preventDefault();
+        // console.log(user)
+        let duser : any = {
+            name:'hello',
+            email:"xyz@example.com"
+        }
+        // dispatch(credentialLogin(duser));
         console.log(user)
-        const res = await signIn("credentials", {
-            email: user.email,
-            password: user.password,
-            redirect: false
-        })
-        console.log(res)
+        signIn("credentials", {email:user.email, password:user.password,callbackUrl:"http://localhost:3000"})
+        // let res = await fetch("/api/login",{
+        //     method:"POST",
+        //     body: JSON.stringify(user),
+        //     headers:{
+        //         "Content-Type" :"application/json"
+        //     }
+        // })
+        // let data = await res.json();
+        // console.log(data.user);
+        // localStorage.setItem("user", JSON.stringify(data.user))
+        // const res = await signIn("credentials", {
+        //     email: user.email,
+        //     password: user.password,
+        //     redirect: false
+        // })
+        // console.log(res)
     }
     async function handleGoogleLogin(){
         signIn("google",{callbackUrl:"http://localhost:3000"})
-    }   
+    // }   console.log(res)
+    }
     const  handleGithubLogin = async() => {
         signIn('github', {callbackUrl:'http://localhost:3000'})
     }
@@ -65,11 +93,8 @@ const Login: NextPage = () => {
                 <div className="container mx-auto ">
                     <div className="flex justify-center  px-6 my-2">
 
-                        <div className="w-full xl:w-3/4 bg-white rounded-xl lg:w-11/12 flex shadow-xl">
-                            <div className="w-full h-auto hidden lg:block lg:w-5/12 bg-contain bg-no-repeat bg-center rounded-l-lg"
-                                style={{ backgroundImage: "url('/images/form.jpg')" }}></div>
-
-                            <div className="w-full lg:w-7/12 bg-white  rounded-lg lg:rounded-l-none">
+                        <div className="w-full xl:w-3/4 bg-white rounded-xl lg:w-11/12 flex flex-wrap shadow-xl">
+                        <div className="w-full lg:w-7/12 bg-white  rounded-lg lg:rounded-l-none">
                                 <h3 className="pt-4 text-2xl text-center">Login!</h3>
                                 <form onSubmit={loginUser} className="px-6 pt-6 pb-8 mb-4 bg-white rounded">
 
@@ -111,16 +136,9 @@ const Login: NextPage = () => {
                                         </button>
                                     </div>
                                     {/* <hr className="mb-6 border-t" /> */}
-                                    <div className="">
-                                        <Divider sx={{ my: 1 }} component={"div"}  >Or </Divider></div>
-                                    <Stack sx={{
-                                        margin: ".3em 0"
-                                    }}>
-
-                                        <Button onClick={handleGoogleLogin} size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GoogleIcon /><span className='mx-2'>Login with Google</span></div></Button>
-                                        <Button onClick={handleGithubLogin} size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><GitHubIcon /><span className='mx-2'>Login with Github</span></div></Button>
-                                        <Button onClick={handleFacebookLogin} size='small' style={{ background: "var(--lightblue)", color: "white", margin: "1px 0", textTransform: "capitalize", }}> <div className="flex  justify-start items-center"><FacebookIcon /><span className='mx-2'>Login with Facebook</span></div> </Button>
-                                    </Stack>
+                                    {/* <div className="">
+                                        <Di/ider sx={{ my: 1 }} component={"div"}  >Or </Divider></div> */}
+                                
                                     <div className="text-center">
                                         <a
                                             className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
@@ -139,6 +157,27 @@ const Login: NextPage = () => {
                                     </div>
                                 </form>
                             </div>
+                            <div className="w-full h-auto lg:block lg:w-5/12 bg-contain  bg-no-repeat bg-center rounded-l-lg"
+                                // style={{ backgroundImage: "url('/images/form.jpg')" }}
+                                >
+                                        <h3 className="pt-4  max-lx:pt-0 text-2xl text-center">Social Login!</h3>
+                                        <div className='className="px-6 pt-6 pb-8 mb-4 max-xl:pt-2 bg-white rounded"'>
+
+                                        <Stack sx={{
+                                            my:2,
+                                            textALign:"left",
+                                            px:3
+                                    }} spacing={.3}>
+
+
+                                        <Button onClick={handleGoogleLogin} size='small' style={{ background: "var(--lightblue)", color: "white", textTransform: "capitalize", }}> <div className="flex justify-start w-full"><GoogleIcon /><span className='mx-2'>Login with Google</span></div></Button>
+                                        <Button onClick={handleGithubLogin} size='small' style={{ background: "var(--lightblue)", color: "white", textTransform: "capitalize", }}> <div className="flex justify-start w-full"><GitHubIcon /><span className='mx-2'>Login with Github</span></div></Button>
+                                        <Button onClick={handleFacebookLogin} size='small' style={{ background: "var(--lightblue)", color: "white", textTransform: "capitalize", }}> <div className="flex justify-start w-full"><FacebookIcon /><span className='mx-2'>Login with Facebook</span></div> </Button>
+                                    </Stack>
+                                            </div>
+                            </div>
+
+                           
                         </div>
 
                     </div>
