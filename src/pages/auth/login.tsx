@@ -49,12 +49,9 @@ const Login : NextPage = () => {
     const loginUser = async (e: any) => {
         e.preventDefault();
         // console.log(user)
-        let duser : any = {
-            name:'hello',
-            email:"xyz@example.com"
-        }
+   
         // dispatch(credentialLogin(duser));
-        console.log(user)
+        // console.log(user)
         signIn("credentials", {email:user.email, password:user.password,callbackUrl:"http://localhost:3000"})
         // let res = await fetch("/api/login",{
         //     method:"POST",

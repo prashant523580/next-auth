@@ -5,6 +5,7 @@ import React from 'react';
 import Loader from '@/components/Loader';
 import { Provider } from 'react-redux';
 import store from '@/redux/store/store';
+import NextNProgress from "nextjs-progressbar"
 export default function App({ Component, pageProps }: AppProps) {
   const [loading,setLoading] = React.useState(true);
     React.useEffect(() => {
@@ -18,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
        session={pageProps.session}
     >
       <Provider store={store}>
-
+      <NextNProgress color='#245'/>
       <Component {...pageProps} />
       {
         // loading ? <Loader/> : 

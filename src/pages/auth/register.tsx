@@ -130,7 +130,7 @@ const Register: NextPage = () => {
         // },2500)
     }
     return (
-        loading ? <Loader /> :
+        // loading ? <Loader /> :
             <Layout sx={{
                 padding: "6px 0"
             }}>

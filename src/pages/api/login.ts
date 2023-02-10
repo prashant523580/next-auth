@@ -1,12 +1,12 @@
 import User from "@/model/user.model";
 import { NextApiRequest, NextApiResponse } from "next";
 
-
+import connectToMongoDb from "@/db/mongodb";
+connectToMongoDb()
 const handler =  async (req : NextApiRequest,res:NextApiResponse) => {
         
     if(req.method == "POST"){
         try{
-
             let {email,password} = req.body;
             let user = await User.findOne({email});
             if(user.password === password){

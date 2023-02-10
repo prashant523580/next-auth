@@ -7,8 +7,10 @@ import {MongoDBAdapter} from "@next-auth/mongodb-adapter";
 import { clientPromise } from "../../../db/dbcon";
 import User from "@/model/user.model";
 import CryptoJs from "crypto-js";
+import connectToMongoDb from "@/db/mongodb";
 // let {clientPromise} = await connectToDatabase()
-
+// import jwt from "jsonwebtoken"
+connectToMongoDb();
 const authOptions :NextAuthOptions  = {
   session:{
     strategy:"jwt"
@@ -28,6 +30,7 @@ const authOptions :NextAuthOptions  = {
       clientSecret: process.env.FACEBOOK_SECRET
     }),
     CredentialsProviders({
+
       type: 'credentials',
       credentials: {
         // email: {label : "Email", placeholder:"example@gmail.com"},
@@ -40,18 +43,19 @@ const authOptions :NextAuthOptions  = {
         };
         // console.log(email, password)
         // validate here your username and password
-        let user : any = await User.findOne({email});
+        let user  = await User.findOne({email});
         // console.log(user)
         // if(user.password == password){
         //   return user
         // }
         // throw new Error("invalid credential!")
           let dcryptPassword = CryptoJs.AES.decrypt(user.password, process.env.AES_SECRET_KEY).toString(CryptoJs.enc.Utf8)
-        if (password == dcryptPassword) {
+        // const isPasswordMatch = await User.comparePassword(password);
+          if (password == dcryptPassword) {
           // throw new Error('invalid credentials');
           // console.log(logged_user)
           return {
-            id: 1,
+            id: user._id,
             name: user.firstname + " " + user.lastname,
             email: user.email,
             image: user.image
@@ -71,8 +75,13 @@ const authOptions :NextAuthOptions  = {
   pages: {
     signIn: "/auth/login",  
   } ,
+ 
   callbacks: {
-    session({ session , token, user }: any) {
+    async session({ session , token, user }: any) {
+      // const encodedToken = jwt.sign(token, process.env.JWT_SECRET, { algorithm: 'HS256'});
+      // session.id = token.id;
+      // session.token = encodedToken;
+      // return Promise.resolve(session);
       return session // The return type will match the one returned in `useSession()`
     },
   },
