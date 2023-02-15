@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 
 const connectToMongoDb = async () => {
-    const options  = {
+    const options   = {
         useNewUrlParser : true,
         useUnifiedTopology : true
     }

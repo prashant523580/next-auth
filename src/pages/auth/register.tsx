@@ -1,8 +1,6 @@
-import BaseCard from '@/components/BaseCard/Basecard';
 import { Button, Grid, Stack, TextField } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import type { NextPage } from 'next';
-import { signIn } from 'next-auth/react';
 import React from 'react'
 import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -12,10 +10,13 @@ import Link from 'next/link';
 import Loader from '@/components/Loader';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import axios from 'axios';
 import Toastify from '@/components/Toastify';
+import { UserTypes } from '@/types/user';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
+import {registerUser} from "@/redux/actions/index"
 const Register: NextPage = () => {
-    const [user, setUser] = React.useState<any>({
+    const [user, setUser] = React.useState<UserTypes>({
         firstname: "",
         lastname: "",
         phone: "",
@@ -23,6 +24,8 @@ const Register: NextPage = () => {
         password: "",
         cpassword: "",
     })
+    const router = useRouter();
+    const dispatch = useDispatch<any>();
     const [loading, setLoading] = React.useState(true);
     const [passwordError, setPasswordError] = React.useState(false);
     const [firstnameError, setFirstnameError] = React.useState(false);
@@ -44,14 +47,11 @@ const Register: NextPage = () => {
     }, [])
     const inputEvent = (e: any) => {
         let { name, value } = e.target;
-        console.log(name, value)
         setUser((pre: any) => {
             return {
-
                 ...pre,
                 [name]: value
             }
-
         })
         
     }
@@ -64,8 +64,8 @@ const Register: NextPage = () => {
         (user.cpassword === "") ? setCPasswordError(true) : setCPasswordError(false);
        
     }
-    const registerUser = async (e: any) => {
-        e.preventDefault();
+    const handleRegisterUser =  async (e: any) => {
+        // e.preventDefault();
         isEmpty()
         if (user.password !== user.cpassword) {
             setConfirmPasswordError(true)
@@ -82,52 +82,37 @@ const Register: NextPage = () => {
         //  setPasswordError(false)
         //  setCPasswordError(false)
         // console.log(user)
-        let config = {
-            headers:{
-                "Content-Type": "application/json"
-            }
-        }
-        let res = await fetch("/api/register",{
-            headers:{
-                "Content-Type": 'application/json'
-            },
-            body: JSON.stringify(user),
-            method:"POST"
-        });
-        let data = await res.json();
-            if(data){
-
-                setResponseMessage(data.message)
-                setSuccess(data.success)
-                setOpen(true)
-                setUser({
-                    email:"",
-                    firstname:"",
-                    lastname:"",
-                    phone:"",
-                    password:"",
-                    cpassword:""
-                })
-            }
-
-            // console.log(data)
-        // if(data){
-        // }else{
-        //     setResponseMessage('Something wents wrongs..')
-        //     // setError(false)
-        //     setOpen(true)
-        //     setSuccess(false)
-
+        // let config = {
+        //     headers:{
+        //         "Content-Type": "application/json"
+        //     }
         // }
-        // const res = await signIn("credentials", {
-        //     email: user.email,
-        //     password: user.password,
-        //     redirect: false
-        // })
-        // console.log(res)
-        // setInterval(() => {
-        //     setOpen(false)
-        // },2500)
+        dispatch(registerUser(user))
+        router.push("/")
+        // let res = await fetch("/api/register",{
+        //     headers:{
+        //         "Content-Type": 'application/json'
+        //     },
+        //     body: JSON.stringify(user),
+        //     method:"POST"
+        // });
+        // let data = await res.json();
+        //     if(data.success){
+        //         router.push("/auth/login")
+        //         setResponseMessage(data.message)
+        //         setSuccess(data.success)
+        //         setOpen(true)
+        //         setUser({
+        //             email:"",
+        //             firstname:"",
+        //             lastname:"",
+        //             phone:"",
+        //             password:"",
+        //             cpassword:""
+        //         })
+        //     }
+        
+       
     }
     return (
         // loading ? <Loader /> :
@@ -205,7 +190,7 @@ const Register: NextPage = () => {
                         <div className="w-full xl:w-3/4 bg-white rounded-xl lg:w-11/12 flex flex-wrap shadow-xl">
                         <div className="w-full lg:w-7/12 bg-white  rounded-lg lg:rounded-l-none">
                         <h3 className="pt-4 text-2xl text-center">Create an Account!</h3>
-                                <form onSubmit={registerUser} className="px-6 pt-6 pb-8 mb-4 bg-white rounded">
+                                <div className="px-6 pt-6 pb-8 mb-4 bg-white rounded">
                                     <div className="mb-4 md:flex md:justify-between">
                                         <div className="mb-4 md:mr-2 md:mb-0">
                                             <TextField
@@ -292,6 +277,7 @@ const Register: NextPage = () => {
                                     </div>
                                     <div className="mb-6 text-center">
                                         <button
+                                        onClick={handleRegisterUser}
                                             className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
                                             type="submit"
                                         >
@@ -316,7 +302,7 @@ const Register: NextPage = () => {
                                             Already have an account? Login!
                                         </Link>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                             <div className="w-full h-auto lg:block lg:w-5/12 bg-contain  bg-no-repeat bg-center rounded-l-lg"
                                 // style={{ backgroundImage: "url('/images/form.jpg')" }}

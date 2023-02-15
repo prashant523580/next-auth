@@ -4,11 +4,37 @@ import Link from 'next/link'
 import React from 'react'
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store/store';
+import { logout } from '@/redux/actions';
 export default function Navbar() {
   const {data :session} = useSession();
+  const {user,token} = useSelector((state:RootState) => state.user);
+  const dispatch = useDispatch();
+  // const [user,setUser] = React.useState(() => {
+    //  if(typeof window != "undefined"){
+
+    //    let user = localStorage.getItem("user")
+    //    user ? user = JSON.parse(user) : null
+    //    return user
+    //   }
+  // })
+ 
+  const handleSignOut = async () => {
+      if(session){
+        return signOut()
+      }else{
+
+        
+        // localStorage.clear("token");
+        // localStorage.clear("user");
+        dispatch(logout())
+        window.location.reload();
+      }
+  }
   return (
     <nav>
-      <header className="text-gray-600 body-font bg-white sticky top-0">
+      <header className="text-gray-600 body-font shadow-sm bg-white sticky top-0">
   <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
     <nav className="flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto">
       <Link href={"/"} className="mr-5 hover:text-gray-900">Home</Link>
@@ -21,8 +47,11 @@ export default function Navbar() {
     <div className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0">
       {/* <Lv */}
     {
-      session ?  
-      <button onClick={() => signOut()}>Logout</button>
+      session || token  ? 
+      <div>
+          <h1>{user.firstname}</h1>
+        <button onClick={handleSignOut}>Logout</button>
+      </div>
       :
       <button onClick={() => signIn()}>Login</button>
     }

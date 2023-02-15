@@ -6,10 +6,10 @@ export default function NotFound(){
 <section>
 
 	<div className="bg-black text-white">
-		<div className="flex h-screen">
+		<div className="flex ">
 			<div className="m-auto text-center">
 				<div>
-					<svg width="631" height="379" viewBox="0 0 631 379" fill="none" xmlns="http://www.w3.org/2000/svg">
+					{/* <svg width="631" height="379" viewBox="0 0 631 379" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<g clip-path="url(#clip0)">
 							<path
 								d="M317.524 379C488.625 379 627.33 368.857 627.33 356.346C627.33 343.834 488.625 333.692 317.524 333.692C146.423 333.692 7.71875 343.834 7.71875 356.346C7.71875 368.857 146.423 379 317.524 379Z"
@@ -182,7 +182,7 @@ export default function NotFound(){
 								<rect width="631" height="379" fill="white" />
 							</clipPath>
 						</defs>
-					</svg>
+					</svg> */}
 
 				</div>
 				<p className="text-sm md:text-base text-yellow-300 p-2 mb-4">The stuff you were looking for doesn't exist

@@ -12,47 +12,51 @@ import Link from 'next/link';
 import Loader from '@/components/Loader';
 import { useRouter } from 'next/router';
 import {useDispatch,useSelector} from "react-redux";
-import { credentialLogin } from '@/redux/slices/user.slices';
+// import { credentialLogin } from '@/redux/slices/user.slices';
 import { RootState } from '@/redux/store/store';
+import Toastify from '@/components/Toastify';
+import { loginUser } from '@/redux/actions/user.action';
+
 const Login : NextPage = () => {
-    const dispatch= useDispatch();
-    const state = useSelector((state:RootState) => state.user);
-    const [user, setUser] = React.useState({
+    const dispatch= useDispatch<any>();
+    const {user,authenticate} = useSelector((state:RootState) => state.user);
+    const [userFormData, setUserFormData] = React.useState({
         email: "",
         password: ""
     })
+    const [open ,setOpen] = React.useState(false);
     const {data :session} = useSession();
     const [loading, setLoading] = React.useState(true);
     const router = useRouter();
-    React.useEffect(() => {
     
-        if(session){
-            router.push('/')
-        }
-        
+    const [success,setSuccess] = React.useState<boolean>(false);
+    const [responseMessage,setResponseMessage] = React.useState('');
+    React.useEffect(() => {
         setInterval(() => {
             setLoading(false)
         }, 500);
     }, [])
     React.useEffect(() => {
-        // setLoading(true);
-        console.log(state)
-       
-    }, [state])
+    
+        if(session || authenticate == true){
+            router.push('/')
+        }
+      
+    }, [session,authenticate])
     const inputEvent = (e: any) => {
         let { name, value } = e.target;
         // console.log(name, value)
-        setUser((pre: any) => {
+        setUserFormData((pre: any) => {
             return { ...pre, [name]: value }
         })
     }
-    const loginUser = async (e: any) => {
+    const loginHandler = async (e: any) => {
         e.preventDefault();
         // console.log(user)
    
-        // dispatch(credentialLogin(duser));
+        dispatch(loginUser(userFormData));
         // console.log(user)
-        signIn("credentials", {email:user.email, password:user.password,callbackUrl:"http://localhost:3000"})
+        // signIn("credentials", {email:user.email, password:user.password,callbackUrl:"http://localhost:3000"})
         // let res = await fetch("/api/login",{
         //     method:"POST",
         //     body: JSON.stringify(user),
@@ -61,14 +65,21 @@ const Login : NextPage = () => {
         //     }
         // })
         // let data = await res.json();
-        // console.log(data.user);
-        // localStorage.setItem("user", JSON.stringify(data.user))
-        // const res = await signIn("credentials", {
-        //     email: user.email,
-        //     password: user.password,
-        //     redirect: false
-        // })
-        // console.log(res)
+        // console.log(data);
+        // if(data.success){
+        //     router.push('/')
+        //     setOpen(true)
+        //     setSuccess(true)
+        //     setResponseMessage(data.message)
+        //     localStorage.setItem("user", JSON.stringify(data.user))
+        //     localStorage.setItem("token", JSON.stringify(data.token))
+        // }else{
+
+
+        //     setSuccess(false)
+        //     setOpen(true)
+        //     setResponseMessage(data.message)
+        // }
     }
     async function handleGoogleLogin(){
         signIn("google",{callbackUrl:"http://localhost:3000"})
@@ -87,13 +98,15 @@ const Login : NextPage = () => {
                 padding: "6px 0"
             }}>
                 {/* <h1>Login form</h1> */}
+                <Toastify onClick={() => setOpen(false)} open={open} succes={success} title="Register" message={responseMessage}/>
+                
                 <div className="container mx-auto ">
                     <div className="flex justify-center  px-6 my-2">
 
                         <div className="w-full xl:w-3/4 bg-white rounded-xl lg:w-11/12 flex flex-wrap shadow-xl">
                         <div className="w-full lg:w-7/12 bg-white  rounded-lg lg:rounded-l-none">
                                 <h3 className="pt-4 text-2xl text-center">Login!</h3>
-                                <form onSubmit={loginUser} className="px-6 pt-6 pb-8 mb-4 bg-white rounded">
+                                <form onSubmit={loginHandler} className="px-6 pt-6 pb-8 mb-4 bg-white rounded">
 
 
                                     <div className="mb-4">
@@ -101,7 +114,7 @@ const Login : NextPage = () => {
 
                                             // error={emailError}
                                             fullWidth
-                                            value={user.email}
+                                            value={userFormData.email}
                                             label="Email"
                                             variant='standard'
                                             type={'email'}
@@ -115,7 +128,7 @@ const Login : NextPage = () => {
 
                                             // error={emailError}
                                             fullWidth
-                                            value={user.password}
+                                            value={userFormData.password}
                                             label="Password"
                                             variant='standard'
                                             type={'password'}

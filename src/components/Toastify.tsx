@@ -15,7 +15,7 @@ export default function Toastify({onClick,title,message,success,open}: any) {
     setInterval(() => {
 
       onClick();
-    },4000)
+    },10000)
   },[])
   return (
     <div className={`toastify ${open == false ? " translate-x-[120%]" : " translate-x-0 "} ease-linear transition-transform `}>

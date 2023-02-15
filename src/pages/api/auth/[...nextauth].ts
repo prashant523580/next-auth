@@ -4,14 +4,14 @@ import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import FacebookProvider from "next-auth/providers/facebook"; 
 import {MongoDBAdapter} from "@next-auth/mongodb-adapter";
-import { clientPromise } from "../../../db/dbcon";
+import { clientPromise } from "../../../lib/mongodb";
 import User from "@/model/user.model";
 import CryptoJs from "crypto-js";
-import connectToMongoDb from "@/db/mongodb";
+import connectToMongoDb from "@/db/dbconn";
 // let {clientPromise} = await connectToDatabase()
 // import jwt from "jsonwebtoken"
-connectToMongoDb();
 const authOptions :NextAuthOptions  = {
+  adapter: MongoDBAdapter(clientPromise,{databaseName:"nextauth"}),
   session:{
     strategy:"jwt"
   },
@@ -30,30 +30,31 @@ const authOptions :NextAuthOptions  = {
       clientSecret: process.env.FACEBOOK_SECRET
     }),
     CredentialsProviders({
-
       type: 'credentials',
       credentials: {
         // email: {label : "Email", placeholder:"example@gmail.com"},
         // password : {label: "Password", type: "password"}
       },
      async authorize(credentials , req){
+      connectToMongoDb()
         const {email, password} = credentials as {
           email: string,
           password: string,
         };
-        // console.log(email, password)
-        // validate here your username and password
+        
         let user  = await User.findOne({email});
-        // console.log(user)
+        console.log(user)
         // if(user.password == password){
         //   return user
         // }
         // throw new Error("invalid credential!")
           let dcryptPassword = CryptoJs.AES.decrypt(user.password, process.env.AES_SECRET_KEY).toString(CryptoJs.enc.Utf8)
-        // const isPasswordMatch = await User.comparePassword(password);
+        
           if (password == dcryptPassword) {
           // throw new Error('invalid credentials');
           // console.log(logged_user)
+          // return user
+          
           return {
             id: user._id,
             name: user.firstname + " " + user.lastname,
@@ -68,16 +69,14 @@ const authOptions :NextAuthOptions  = {
       },
     }),
   ],
-  adapter: MongoDBAdapter(clientPromise,{
-    databaseName : "nextauth"
-  }),
+ 
   secret: process.env.SECRET,
   pages: {
     signIn: "/auth/login",  
   } ,
  
   callbacks: {
-    async session({ session , token, user }: any) {
+    async session({ session , token, user }) {
       // const encodedToken = jwt.sign(token, process.env.JWT_SECRET, { algorithm: 'HS256'});
       // session.id = token.id;
       // session.token = encodedToken;

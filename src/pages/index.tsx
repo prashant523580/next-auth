@@ -2,26 +2,29 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import { useSession ,signIn, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import type { NextPage } from 'next'
 import Layout from '@/components/Layout/Layout'
 import Loader from '@/components/Loader'
 import React from "react";
 import DashboardProtected from './Dashboard'
-const  Home  : NextPage = () =>  {
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store/store'
+const  Home  : NextPage = ({token} :any) =>  {
   // const [session,setSession] = React.useState(false);
   const [loading,setLoading] = React.useState(true);
+  const {user,authenticate}= useSelector((state :RootState) => state.user)
     React.useEffect(() => {
         // setLoading(true);
         setInterval(() => {
             setLoading(false)
         },300);
+       if(!authenticate){
+          console.log(user)
+       }
     },[])
     const {data: session} = useSession();
-    React.useEffect(() => {
-        console.log(session)
-      
-    },[])
+  
 
   // if(session){
   //   console.log(session)
@@ -68,8 +71,19 @@ const  Home  : NextPage = () =>  {
             </div>
             </> 
             :
-          <button onClick={() => signIn()}>Login</button>
-          }
+            
+              token ? 
+              <div> 
+                  <h1>{user.firstname + " " + user.lastname}</h1>
+                  <h1>sign in as {user.email}</h1>
+              </div>
+              :
+              <div>
+                <h1>Unauthorized {'\:\('} </h1>
+              {/* <button onClick={() => signIn()}>Login</button> */}
+              </div>
+            }
+          
          </div>
         </div>
       </main>

@@ -1,7 +1,7 @@
 import * as mongoDB from "mongodb";
 
 // const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net/?retryWrites=true&w=majority";
-const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net/nextauth";
+const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net";
 const MONGODB_NAME = "nextauth"
 if(!MONGODB_URI){
     throw new Error("Define the mongodb environmental variables")
@@ -17,12 +17,12 @@ let options : any ={
 
 }
 
-export let clientPromise : Promise<mongoDB.MongoClient>
+let clientPromise : Promise<mongoDB.MongoClient>
 if (process.env.NODE_ENV === "development") {
     // In development mode, use a global variable so that the value
     // is preserved across module reloads caused by HMR (Hot Module Replacement).
     if (!global._mongoClientPromise) {
-      cacheClient = new mongoDB.MongoClient(MONGODB_URI, options)
+      cacheClient  = new mongoDB.MongoClient(MONGODB_URI, options)
       global._mongoClientPromise = cacheClient.connect()
     }
     clientPromise = global._mongoClientPromise
@@ -52,5 +52,7 @@ const connectToDatabase = async () => {
 
     }
 }
-
+export {
+    clientPromise
+}
 export default connectToDatabase;

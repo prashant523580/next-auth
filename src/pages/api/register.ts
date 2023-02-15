@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import connectToDatabase from '@/db/dbcon'
+import connectToDatabase from '@/lib/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as mongoDB from "mongodb";
-import connectToMongoDb from '@/db/mongodb';
+import connectToMongoDb from '@/db/dbconn';
 import User from '@/model/user.model';
 import Cryptojs from "crypto-js";
 import jwt from "jsonwebtoken";
@@ -31,7 +31,7 @@ export default async function handler(
     try {
 
       let { firstname, lastname, email, phone, password } = req.body;
-      console.log(firstname, lastname)
+      // console.log(firstname, lastname,phone)
       let user_existed = await User.findOne({
         email
       });
@@ -49,8 +49,12 @@ export default async function handler(
           phone,
           password: Cryptojs.AES.encrypt(password,process.env.AES_SECRET_KEY).toString()
         }).save();
+        let token = jwt.sign({user}, process.env.JWT_SECRET, {
+          expiresIn: "1d"
+      })
         res.status(201).json({
           success: true,
+          token,
           message: "user registered successfully..",
           user
         })
