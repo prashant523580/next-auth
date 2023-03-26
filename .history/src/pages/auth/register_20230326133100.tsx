@@ -187,7 +187,7 @@ const Register: NextPage = () => {
             <div className="container mx-auto ">
                 <div className="flex justify-center  px-6 my-2">
 
-                    <div className="w-full xl:w-2/4 bg-white rounded-xl  flex flex-wrap shadow-xl">
+                    <div className="w-full xl:w-3/4 bg-white rounded-xl lg:w-11/12 flex flex-wrap shadow-xl">
                         <div className="w-full bg-white  rounded-lg lg:rounded-l-none">
                             <h3 className="pt-4 text-2xl text-center">Create an Account!</h3>
                             <div className="px-6 pt-6 pb-8 mb-4 bg-white rounded">

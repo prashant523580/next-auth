@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
+import connectToDatabase from '@/lib/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as mongoDB from "mongodb";
 import connectToMongoDb from '@/db/dbconn';

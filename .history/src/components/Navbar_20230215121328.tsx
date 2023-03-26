@@ -10,7 +10,7 @@ import { logout } from '@/redux/actions';
 export default function Navbar() {
   const {data :session} = useSession();
   const {user,token} = useSelector((state:RootState) => state.user);
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   // const [user,setUser] = React.useState(() => {
     //  if(typeof window != "undefined"){
 

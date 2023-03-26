@@ -7,7 +7,7 @@ import {MongoDBAdapter} from "@next-auth/mongodb-adapter";
 import { clientPromise } from "../../../lib/mongodb";
 import User from "@/model/user.model";
 import CryptoJs from "crypto-js";
-import connectToMongoDb  from "@/db/dbconn";
+import connectToMongoDb from "@/db/dbconn";
 // let {clientPromise} = await connectToDatabase()
 // import jwt from "jsonwebtoken"
 const authOptions :NextAuthOptions  = {
@@ -35,19 +35,15 @@ const authOptions :NextAuthOptions  = {
         // email: {label : "Email", placeholder:"example@gmail.com"},
         // password : {label: "Password", type: "password"}
       },
-      // @ts-ignore
-      async authorize(credentials , req:any){
+     async authorize(credentials , req){
       connectToMongoDb()
         const {email, password} = credentials as {
           email: string,
           password: string,
-          image?:string,
-          id?:undefined,
-          name?:string
         };
         
         let user  = await User.findOne({email});
-        // console.log(user)
+        console.log(user)
         // if(user.password == password){
         //   return user
         // }

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 let dbURI = process.env.MONGODB_URI;
 let dbName = process.env.MONGODB_NAMEs;
-
+let clientPromise :any; 
 const connectToMongoDb = async () => {
     const options :any  = {
         useNewUrlParser : true,
@@ -11,7 +11,10 @@ const connectToMongoDb = async () => {
     if(mongoose.connection.readyState >= 1){
         return
     }
-    mongoose.connect(`${dbURI}/${dbName}`,options)
+    clientPromise = mongoose.connect(`${dbURI}/${dbName}`,options)
     
 }
 export default connectToMongoDb
+export {
+    clientPromise
+}

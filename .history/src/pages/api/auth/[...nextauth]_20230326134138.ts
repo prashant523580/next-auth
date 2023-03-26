@@ -35,7 +35,6 @@ const authOptions :NextAuthOptions  = {
         // email: {label : "Email", placeholder:"example@gmail.com"},
         // password : {label: "Password", type: "password"}
       },
-      // @ts-ignore
       async authorize(credentials , req:any){
       connectToMongoDb()
         const {email, password} = credentials as {

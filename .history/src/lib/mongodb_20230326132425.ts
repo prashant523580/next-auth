@@ -1,7 +1,7 @@
 import { MongoClientOptions } from "mongodb";
 import * as mongoDB from "mongodb";
 let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise: Promise<mongoDB.MongoClient>
+    _mongoClientPromise: Promise<MongoClient>
   }
 // const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net/?retryWrites=true&w=majority";
 // const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net";

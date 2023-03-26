@@ -1,8 +1,6 @@
 import { MongoClientOptions } from "mongodb";
 import * as mongoDB from "mongodb";
-let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise: Promise<mongoDB.MongoClient>
-  }
+global: any
 // const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net/?retryWrites=true&w=majority";
 // const MONGODB_URI  = "mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net";
 const MONGODB_URI  = process.env.MONGODB_URI;
@@ -26,11 +24,11 @@ let clientPromise : Promise<mongoDB.MongoClient>
 if (process.env.NODE_ENV === "development") {
     // In development mode, use a global variable so that the value
     // is preserved across module reloads caused by HMR (Hot Module Replacement).
-    if (!globalWithMongo._mongoClientPromise) {
+    if (!global._mongoClientPromise) {
       cacheClient  = new mongoDB.MongoClient(MONGODB_URI, options)
-      globalWithMongo._mongoClientPromise = cacheClient.connect()
+      global._mongoClientPromise = cacheClient.connect()
     }
-    clientPromise = globalWithMongo._mongoClientPromise
+    clientPromise = global._mongoClientPromise
   } else {
     // In production mode, it's best to not use a global variable.
     cacheClient = new mongoDB.MongoClient(MONGODB_URI, options)

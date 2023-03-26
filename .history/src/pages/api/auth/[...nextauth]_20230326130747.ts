@@ -35,19 +35,15 @@ const authOptions :NextAuthOptions  = {
         // email: {label : "Email", placeholder:"example@gmail.com"},
         // password : {label: "Password", type: "password"}
       },
-      // @ts-ignore
-      async authorize(credentials , req:any){
+     async authorize(credentials:any , req:any){
       connectToMongoDb()
         const {email, password} = credentials as {
           email: string,
           password: string,
-          image?:string,
-          id?:undefined,
-          name?:string
         };
         
         let user  = await User.findOne({email});
-        // console.log(user)
+        console.log(user)
         // if(user.password == password){
         //   return user
         // }

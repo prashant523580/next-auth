@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 let dbURI = process.env.MONGODB_URI;
 let dbName = process.env.MONGODB_NAMEs;
-
 const connectToMongoDb = async () => {
     const options :any  = {
         useNewUrlParser : true,

@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-let dbURI = process.env.MONGODB_URI;
-let dbName = process.env.MONGODB_NAMEs;
 
 const connectToMongoDb = async () => {
     const options :any  = {
@@ -11,7 +9,7 @@ const connectToMongoDb = async () => {
     if(mongoose.connection.readyState >= 1){
         return
     }
-    mongoose.connect(`${dbURI}/${dbName}`,options)
+    mongoose.connect("mongodb+srv://admin:admin@cluster0.urmjmrf.mongodb.net/nextauth",options)
     
 }
 export default connectToMongoDb
