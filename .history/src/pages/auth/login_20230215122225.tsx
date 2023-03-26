@@ -162,7 +162,7 @@ const Login : NextPage = () => {
                                             className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
                                             href="/auth/register"
                                         >
-                                            Don&apos;t have an account? Register!
+                                            Don't have an account? Register!
                                         </Link>
                                     </div>
                                 </form>

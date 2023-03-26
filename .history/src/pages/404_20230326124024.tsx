@@ -189,7 +189,7 @@ export default function NotFound(){
 				</p>
 				<Link href="/"
 					className="bg-transparent hover:bg-yellow-300 text-yellow-300 hover:text-white rounded shadow hover:shadow-lg py-2 px-4 border border-yellow-300 hover:border-transparent">
-					Return Home</Link>
+					Retry</Link>
 			</div>
 		</div>
 	</div>
